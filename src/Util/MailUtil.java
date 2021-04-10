@@ -1,10 +1,12 @@
 package Util;
 
+import Bean.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
 @Service
 public class MailUtil {
@@ -111,12 +113,13 @@ public class MailUtil {
 
     }
 
-    public  void  receive(String SendUser,String SendPassword){
+    public List<Mail> receive(String SendUser, String SendPassword){
         String server="127.0.0.1";//POP3服务器地址
 
        // String user="1220614922@xxkd.com";//用户名，填写自己的邮箱用户名
 
      //   String password="1220614922";//密码，填写自己的密码
+        List<Mail> list= null;
         MailSender mailSender = null;
         try {
             mailSender=new MailSender(server,110);
@@ -124,9 +127,10 @@ public class MailUtil {
             e.printStackTrace();
         }
         if(mailSender!=null) {
-            mailSender.recieveMail(SendUser, SendPassword);
+            list= mailSender.recieveMail(SendUser, SendPassword);
         }else{
             System.out.println("get link error!");
         }
+        return list;
     }
 }

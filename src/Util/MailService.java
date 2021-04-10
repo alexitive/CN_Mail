@@ -22,7 +22,7 @@ public class MailService {
       //  String SendPassword="QCMZIHOARQCJMQZE";
         String SendUser="test2@xxkd.com";
        String SendPassword="test2";
-        String ReceiveUser="1220614922@xxkd.com";
+        String ReceiveUser="ding@xxkd.com";
 
         /*
          *对用户名和密码进行Base64编码

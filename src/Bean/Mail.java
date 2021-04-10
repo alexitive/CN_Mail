@@ -32,6 +32,21 @@ public class Mail {
                 '}';
     }
 
+    public Mail() {
+    }
+
+    public Mail(int id, String fromEmail, String toEmail, Date sendTime, String subjectTitle, String textContent, int isFlag, int deleted, int seen, int mailSize) {
+        this.id = id;
+        this.fromEmail = fromEmail;
+        this.toEmail = toEmail;
+        this.sendTime = sendTime;
+        this.subjectTitle = subjectTitle;
+        this.textContent = textContent;
+        this.isFlag = isFlag;
+        this.deleted = deleted;
+        this.seen = seen;
+        this.mailSize = mailSize;
+    }
 
     public int getUid() {
         return uid;

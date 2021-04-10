@@ -3,6 +3,7 @@
  * */
 package Util;
 
+import Bean.Mail;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,9 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.StringTokenizer;
 
 @Service
@@ -31,7 +35,7 @@ public class MailSender {
 
         String user="1220614922@xxkd.com";//用户名，填写自己的邮箱用户名
 
-        String password="1220614922";//密码，填写自己的密码
+        String password="qq1220614922";//密码，填写自己的密码
 
         MailSender mailSender=new MailSender(server,110);
 
@@ -58,8 +62,8 @@ public class MailSender {
 
 
     //接收邮件程序
-    public boolean recieveMail(String user,String password){
-
+    public List<Mail> recieveMail(String user,String password){
+        List<Mail> list = null;
         try {
             BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -73,33 +77,62 @@ public class MailSender {
 
             System.out.println("pass 命令执行完毕！");
 
-            stat(in,out);
+            int MailNum = stat(in,out);
 
             System.out.println("stat 命令执行完毕！");
 
-            list(in,out);
-
-            System.out.println("list 命令执行完毕！");
+          //  list(in,out);
+          //  System.out.println("list 命令执行完毕！");
 
             //在此处，可以通过将邮件通过pop3取到缓存中后，对于每一封邮件，将其存储到mail数据库表中，并且向服务器发送dele命令删除此条邮件
-            retr(1,in,out);
-            retr(2,in,out);
-            retr(3,in,out);
-            retr(4,in,out);
+            list = new ArrayList<>();
 
+            for(int i = 1;i<=MailNum;i++)
+            {
+               // System.out.println("第"+i+"封");
+
+                /*
+                        subject:myxulinjie
+                        from:test2@xxkd.com
+                        to:ding@xxkd.com
+                        Content-Type: text/plain;charset="utf-8"
+
+                        1大家好，欢迎来到计算机网络小组
+                 */
+                String temp = retr(i,in,out);
+                String subject = temp.substring( temp.indexOf("subject:")+8, temp.indexOf("from:")-1);
+                String from = temp.substring( temp.indexOf("from:")+5, temp.indexOf("to:")-1);
+                String to = temp.substring( temp.indexOf("to:")+3, temp.indexOf("Content-Type:")-1);
+                String content = temp.substring( temp.indexOf("\"utf-8\"")+9);
+                Mail mail = new Mail(0,from,to,new Date(),subject,content,0,0,0,content.length());
+                list.add(mail);
+                /*
+                System.out.println("===============================");
+                System.out.println("subject:"+subject);
+                System.out.println("from:"+from);
+                System.out.println("to:"+to);
+                System.out.println("content:"+content);
+                 */
+
+            }
             System.out.println("retr 命令执行完毕！");
 
-            quit(in,out);
+            for(int i = 1;i<=MailNum;i++ )
+                sendServer("DELE "+i,in,out);
 
+
+            quit(in,out);
             System.out.println("quit 命令执行完毕！");
 
         }catch(Exception e){
 
             e.printStackTrace();
 
-            return false;
+            return list;
         }
-        return true;
+        for(int i = 0;i<list.size();i++)
+            System.out.println(list.get(i));
+        return list;
     }
 
     //得到服务器返回的一行命令
@@ -273,7 +306,7 @@ public class MailSender {
     }
 
     //retr命令
-    public void retr(int mailNum,BufferedReader in,BufferedWriter out) throws IOException, InterruptedException{
+    public String retr(int mailNum,BufferedReader in,BufferedWriter out) throws IOException, InterruptedException{
 
         String result = null;
 
@@ -284,9 +317,12 @@ public class MailSender {
             throw new IOException("接收邮件出错!");
         }
 
-        System.out.println("第"+mailNum+"封");
-        System.out.println(getMessagedetail(in));
+       // System.out.println("第"+mailNum+"封");
+        String r =getMessagedetail(in);
+       // System.out.println(r);
         Thread.sleep(30);
+        return r;
+
     }
 
     //退出

@@ -9,6 +9,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,12 +39,28 @@ public class MailService {
 
     /**
      * 根据某个用户的id，首先通过pop3查看是否存在新的邮件，然后将其放入自己的数据库中，最后从数据库中拿出所有的数据返回给客户端
-     * @param id
+     * @param username
      * @return
      */
-    public List<Mail> getMail(int id){
+    public List<Mail> getMail(String username){
+        List<Mail> mails = null;
+        try {
+            MailUtil mailUtil = new MailUtil();
 
-        return null;
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            User user = sqlSession.getMapper(UserMapper.class).selectUserByUsername(username);
+
+            List<Mail> newMails = null ;
+            if (user != null)
+                newMails = mailUtil.receive(user.getUsername(), user.getPassword());
+            MailMapper mailMapper = sqlSession.getMapper(MailMapper.class);
+             mailMapper.insertSomeMail(newMails);
+            mails = mailMapper.selectAllMailById(user.getId());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        return mails;
     }
 
     /**
@@ -144,10 +162,26 @@ public class MailService {
 
     /**
      * 群发
-     * @param ids
+     * @param usernames
+     * @param content
      */
-    public void groupSendMail(List<Integer> ids){
+    public void groupSendMail(List<String> usernames,String content){
+        try{
 
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+
+
+            List<Mail> needIn = new ArrayList<>();
+            for(int i = 0;i<usernames.size();i++){
+                User user = userMapper.selectUserByUsername(usernames.get(i));
+                needIn.add(new Mail(0,"Manager@xxkd.com",user.getUsername(),new Date(),"Notice",content,0,0,0,content.length()));
+            }
+            sqlSession.getMapper(MailMapper.class).insertSomeMail(needIn);
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 

@@ -4,6 +4,7 @@ import Bean.Mail;
 import Dao.FriendMapper;
 import Dao.MailMapper;
 import Dao.UserMapper;
+import Util.MailUtil;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -75,5 +76,10 @@ public class Test1 {
         //System.out.println(l);
 
 
+    }
+    @Test
+    public void testReceive(){
+        MailUtil mailUtil = new MailUtil();
+        mailUtil.receive("ding@xxkd.com","qq1220614922");
     }
 }
