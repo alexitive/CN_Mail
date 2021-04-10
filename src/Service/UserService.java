@@ -3,19 +3,34 @@ package Service;
 import Bean.Friend;
 import Bean.User;
 import Dao.UserMapper;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class UserService {
+    static ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("config/Spring-Config.xml");
     /**
      * 注册用户
      * @param user
      * @return
      */
     public boolean  registUser(User user){
+        SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+        //首先查看是否存在相同用户名
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        User isExist = userMapper.selectUserByUsername(user.getUsername());
+        if(isExist != null)
+             return false;
+        try {
+            userMapper.insertUser(user);
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
 
         return true;
     }
@@ -27,6 +42,14 @@ public class UserService {
      */
     public boolean  removeUser(int id){
 
+        try{
+        SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+        sqlSession.getMapper(UserMapper.class).deleteUser(id);
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
         return true;
     }
 
@@ -37,7 +60,16 @@ public class UserService {
      */
     public boolean  changeUserInformation(User user){
 
+        try{
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            sqlSession.getMapper(UserMapper.class).updateUser(user);
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
         return true;
+
     }
 
     /**
@@ -47,7 +79,16 @@ public class UserService {
      */
     public User queryUserByUsername(String username){
 
-        return null;
+        User result = null;
+        try{
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            result = sqlSession.getMapper(UserMapper.class).selectUserByUsername(username);
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return result;
     }
 
 
@@ -57,7 +98,17 @@ public class UserService {
      * @return
      */
     public List<User> queryOneUserFriend(int id){
-        return null;
+
+        List<User> result = null;
+        try{
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            result = sqlSession.getMapper(UserMapper.class).selectAllFriendById(id);
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        return result;
+
     }
 
     /**
@@ -66,7 +117,15 @@ public class UserService {
      */
     public List<User> queryAllUser(){
 
-        return null;
+        List<User> result = null;
+        try{
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            result = sqlSession.getMapper(UserMapper.class).selectAllUser();
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        return result;
     }
 
 }

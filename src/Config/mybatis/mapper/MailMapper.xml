@@ -8,6 +8,10 @@
         select * from mail where id = #{id}
     </select>
 
+    <select id="selectAllMail" resultType="Bean.Mail">
+        select * from mail
+    </select>
+
     <select id="selectMail" resultType="Bean.Mail">
         select * from mail where uid=#{uid}
     </select>
@@ -28,6 +32,25 @@
     <delete id="deleteMail">
         delete from mail where uid = #{uid}
     </delete>
+    <delete id="deleteSomeMail" parameterType="List">
+        delete from mail
+        where uid in
+        <foreach item="item" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="updateMail" parameterType="Bean.Mail">
+        update Mail
+        <set>
+            <if test="isFlag != 3">isFlag=#{isFlag},</if>
+            <if test="deleted != 3">deleted=#{deleted},</if>
+            <if test="seen != 3">seen=#{seen}</if>
+        </set>
+        where uid=#{uid}
+    </update>
+
 
 
 </mapper>

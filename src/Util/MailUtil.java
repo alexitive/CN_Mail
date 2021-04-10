@@ -25,9 +25,9 @@ public class MailUtil {
         /*
          *用户名和密码
          */
-       SendUser="test2@xxkd.com";
-       SendPassword="test2";
-       ReceiveUser="1220614922@xxkd.com";
+    //   SendUser="test2@xxkd.com";
+     //  SendPassword="test2";
+     //  ReceiveUser="1220614922@xxkd.com";
 
         /*
          *对用户名和密码进行Base64编码
@@ -91,7 +91,7 @@ public class MailUtil {
             pw.println("Content-Type: text/plain;charset=\"utf-8\"");//设置编码格式可发送中文内容
             pw.println();
             //内容
-            pw.println("1大家好，欢迎来到计算机网络小组");
+         //   pw.println("1大家好，欢迎来到计算机网络小组");
             pw.println(text);
             pw.println(".");
             pw.print("");
@@ -108,6 +108,7 @@ public class MailUtil {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
 
     public  void  receive(String SendUser,String SendPassword){

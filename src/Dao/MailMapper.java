@@ -10,6 +10,8 @@ import java.util.List;
 public interface MailMapper {
     public List<Mail> selectAllMailById(int id);
 
+    public List<Mail> selectAllMail();
+
     public Mail selectMail(int uid);
 
     public void insertMail(Mail mail);
@@ -18,6 +20,8 @@ public interface MailMapper {
 
     public void deleteMail(int uid);
 
-    //public void updateMail(Mail mail);
+    public void deleteSomeMail(List<Integer> uid);
+
+    public void updateMail(Mail mail);
 
 }

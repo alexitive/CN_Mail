@@ -1,18 +1,37 @@
 package Service;
 
 import Bean.Mail;
+import Bean.User;
+import Dao.MailMapper;
+import Dao.UserMapper;
+import Util.MailUtil;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class MailService {
+    static ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("config/Spring-Config.xml");
     /**
      * 发邮件的函数
      * @return
      */
-    public boolean SendMail(){
+    public boolean SendMail(String SendUser,String ReceiveUser,String subject,String text){
 
+        try {
+            MailUtil mailUtil = new MailUtil();
+
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            User user = sqlSession.getMapper(UserMapper.class).selectUserByUsername(SendUser);
+            if (user != null)
+                mailUtil.send(user.getUsername(), user.getPassword(), ReceiveUser, subject, text);
+            else return false;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 
@@ -31,23 +50,94 @@ public class MailService {
      * @return
      */
     public List<Mail> getAllMail() {
-
-        return null;
+        List<Mail> result = null;
+        try {
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            result = sqlSession.getMapper(MailMapper.class).selectAllMail();
+        }catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        return result;
     }
 
     /**
-     * 用户删除一条邮件，实际上是标记其为deleted
+     * 用户删除一条邮件，实际上是标记其为deleted=1
      * @return
      */
-    public boolean deleteOneMailByUser(){
+    public boolean deleteOneMailByUser(int uid){
+
+        try {
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            MailMapper mailMapper = sqlSession.getMapper(MailMapper.class);
+            Mail mail = mailMapper.selectMail(uid);
+            //设置已经删除
+            mail.setDeleted(1);
+            mailMapper.updateMail(mail);
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
         return true;
+
+    }
+
+    /**
+     * 用户已经查看一条邮件，实际上是标记其为seen =1
+     * @return
+     */
+    public boolean seenOneMailByUser(int uid){
+
+        try {
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            MailMapper mailMapper = sqlSession.getMapper(MailMapper.class);
+            Mail mail = mailMapper.selectMail(uid);
+            //设置已经查看
+            mail.setSeen(1);
+            mailMapper.updateMail(mail);
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+
+    }
+
+    /**
+     * 用户标记一条邮件，实际上是标记其为isFlag=1
+     * @return
+     */
+    public boolean flagOneMailByUser(int uid){
+
+        try {
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            MailMapper mailMapper = sqlSession.getMapper(MailMapper.class);
+            Mail mail = mailMapper.selectMail(uid);
+            //设置已经查看
+            mail.setIsFlag(1);
+            mailMapper.updateMail(mail);
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+
     }
 
     /**
      * 管理员批量进行删除
      * @return
      */
-    public boolean deleteMailByManager(){
+    public boolean deleteMailByManager(List<Integer> ids){
+
+        try{
+            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+            sqlSession.getMapper(MailMapper.class).deleteSomeMail(ids);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
 
         return true;
     }
