@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Dao.MailMapper">
+    <select id="selectAllMailById" resultType="Bean.Mail">
+        select * from mail where id = #{id}
+    </select>
+
+    <select id="selectMail" resultType="Bean.Mail">
+        select * from mail where uid=#{uid}
+    </select>
+
+    <insert id="insertMail">
+        insert into mail(id,fromEmail,toEmail,sendTime,subjectTitle,textContent,isFlag,deleted,seen,mailSize)
+        values(#{id},#{fromEmail},#{toEmail},#{sendTime},#{subjectTitle},#{textContent},#{isFlag},#{deleted},#{seen},#{mailSize})
+    </insert>
+
+    <insert id="insertSomeMail" parameterType="List">
+        insert into mail(id,fromEmail,toEmail,sendTime,subjectTitle,textContent,isFlag,deleted,seen,mailSize) values
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator="),(">
+            #{item.id},#{item.fromEmail},#{item.toEmail},#{item.sendTime},#{item.subjectTitle},
+            #{item.textContent},#{item.isFlag},#{item.deleted},#{item.seen},#{item.mailSize}
+        </foreach>
+    </insert>
+
+    <delete id="deleteMail">
+        delete from mail where uid = #{uid}
+    </delete>
+
+
+</mapper>
