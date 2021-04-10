@@ -26,8 +26,7 @@ public class Test1 {
      //   User user =  sqlSession.selectOne("Dao.UserMapper.getUserById",1);
      //  System.out.println(user);
 
-       // UserService u = new UserService();
-      //  System.out.println(u.queryOneUser(1));
+
     }
 
     @Test
