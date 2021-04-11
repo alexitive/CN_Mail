@@ -31,6 +31,18 @@ public class User {
                 '}';
     }
 
+    public User() {}
+
+    public User(String username, String password, String phone, String nickName, String avatarUrl, Date date, int author, int type) {
+        this.username = username;
+        this.password = password;
+        Phone = phone;
+        this.nickName = nickName;
+        this.avatarUrl = avatarUrl;
+        this.date = date;
+        this.author = author;
+        this.type = type;
+    }
 
     public int getId() {
         return id;

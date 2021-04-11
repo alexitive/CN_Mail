@@ -21,4 +21,6 @@ public interface UserMapper {
 
     public void updateUser(User user);
 
+    public User selectUserById(int id);
+
 }

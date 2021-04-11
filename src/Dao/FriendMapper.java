@@ -14,6 +14,8 @@ public interface FriendMapper {
 
     public Friend selectFriend(int f_id);
 
+    public Friend selectFriendByIdandFriID(@Param("id")int id,@Param("friend_id") int friend_id);
+
     public void insertFriend(Friend friend);
 
     public void deleteFriend(@Param("id")int id, @Param("friend_id")int friend_id);

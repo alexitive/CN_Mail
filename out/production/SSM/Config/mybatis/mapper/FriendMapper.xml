@@ -5,9 +5,14 @@
 
 <mapper namespace="Dao.FriendMapper">
 
-    <select id="selectFroemd" resultType="Bean.Friend">
+    <select id="selectFriend" resultType="Bean.Friend">
         select * from Friend
         where f_id = #{f_id}
+    </select>
+
+    <select id="selectFriendByIdandFriID" resultType="Bean.Friend">
+        select * from Friend
+        where id = #{id} and friend_id = #{friend_id}
     </select>
 
     <insert id="insertFriend" parameterType="Bean.Friend">
@@ -15,7 +20,7 @@
     </insert>
 
     <delete id="deleteFriend">
-        delete from Friend where f_id = #{f_id}
+        delete from Friend where friend_id = #{friend_id} and id = #{id}
     </delete>
 
     <delete id="deleteFriendCause">

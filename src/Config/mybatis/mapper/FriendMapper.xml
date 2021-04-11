@@ -10,6 +10,11 @@
         where f_id = #{f_id}
     </select>
 
+    <select id="selectFriendByIdandFriID" resultType="Bean.Friend">
+        select * from Friend
+        where id = #{id} and friend_id = #{friend_id}
+    </select>
+
     <insert id="insertFriend" parameterType="Bean.Friend">
         insert into Friend(id,friend_id)values(#{id},#{friend_id})
     </insert>

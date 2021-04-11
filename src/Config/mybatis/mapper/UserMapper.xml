@@ -24,6 +24,11 @@
         where username = #{username}
     </select>
 
+    <select id="selectUserById" resultType="Bean.User">
+        select * from User
+        where id= #{id}
+    </select>
+
     <insert id="insertUser" parameterType="Bean.User">
         insert into User(userName,password,phone,nickName,avatarUrl,date,author,type) values(#{username},#{password},#{Phone},#{nickName},#{avatarUrl},#{date},#{author},#{type})
     </insert>

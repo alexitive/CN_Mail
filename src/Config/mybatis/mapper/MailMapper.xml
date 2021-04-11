@@ -5,7 +5,7 @@
 
 <mapper namespace="Dao.MailMapper">
     <select id="selectAllMailById" resultType="Bean.Mail">
-        select * from mail where id = #{id}
+        select * from mail where id = #{id} and deleted = 0
     </select>
 
     <select id="selectAllMail" resultType="Bean.Mail">
@@ -42,7 +42,7 @@
     </delete>
 
     <update id="updateMail" parameterType="Bean.Mail">
-        update Mail
+        update mail
         <set>
             <if test="isFlag != 3">isFlag=#{isFlag},</if>
             <if test="deleted != 3">deleted=#{deleted},</if>

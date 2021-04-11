@@ -2,8 +2,10 @@ package Service;
 
 import Bean.Friend;
 import Bean.Mail;
+import Bean.User;
 import Dao.FriendMapper;
 import Dao.MailMapper;
+import Dao.UserMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,12 @@ public class FriendService {
 
         try {
             SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
-            sqlSession.getMapper(FriendMapper.class).insertFriend(friend);
+            User user = sqlSession.getMapper(UserMapper.class).selectUserById(friend.getFriend_id());
+            if(user == null) return false;
+            FriendMapper friendMapper = sqlSession.getMapper(FriendMapper.class);
+            Friend temp = friendMapper.selectFriendByIdandFriID(friend.getId(), friend.getFriend_id());
+            if(temp != null) return false;
+            friendMapper.insertFriend(friend);
         }catch(Exception e){
             e.printStackTrace();
             return  false;
@@ -32,15 +39,16 @@ public class FriendService {
 
     /**
      * 删除一个朋友关系
-     * @param f_id
+     * @param id 用户id
+     * @param friend_id 朋友id
      * @return
      */
-    public boolean removeFriend(int f_id){
+    public boolean removeFriend(int id,int friend_id){
 
         try {
             SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
-            Friend friend = sqlSession.getMapper(FriendMapper.class).selectFriend(f_id);
-            sqlSession.getMapper(FriendMapper.class).deleteFriend(friend.getId(),friend.getFriend_id());
+//            Friend friend = sqlSession.getMapper(FriendMapper.class).selectFriend(f_id);
+            sqlSession.getMapper(FriendMapper.class).deleteFriend(id,friend_id);
         }catch(Exception e){
             return false;
         }

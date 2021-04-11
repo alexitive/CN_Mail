@@ -82,4 +82,12 @@ public class Test1 {
         MailUtil mailUtil = new MailUtil();
         mailUtil.receive("ding@xxkd.com","qq1220614922");
     }
+
+    @Test
+    public void testSend(){
+        MailUtil mailUtil = new MailUtil();
+        mailUtil.send("ding@xxkd.com","qq1220614922","21313@qq.com","hello world","sohai");
+    }
+
+
 }

@@ -2,6 +2,7 @@ package Service;
 
 import Bean.Friend;
 import Bean.User;
+import Dao.FriendMapper;
 import Dao.UserMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public class UserService {
         try{
         SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
         sqlSession.getMapper(UserMapper.class).deleteUser(id);
+        sqlSession.getMapper(FriendMapper.class).deleteFriendCause(id);
         }catch(Exception e){
             e.printStackTrace();
             return false;
@@ -60,9 +62,13 @@ public class UserService {
      */
     public boolean  changeUserInformation(User user){
 
-        try{
-            SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
-            sqlSession.getMapper(UserMapper.class).updateUser(user);
+        SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        User isExist = userMapper.selectUserByUsername(user.getUsername());
+        if(isExist != null)
+            return false;
+        try {
+            userMapper.updateUser(user);
         }catch(Exception e){
             e.printStackTrace();
             return false;
