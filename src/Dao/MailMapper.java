@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface MailMapper {
-    public List<Mail> selectAllMailById(int id);
+    public List<Mail> selectAllMailByUsername(String username);
 
     public List<Mail> selectAllMail();
 

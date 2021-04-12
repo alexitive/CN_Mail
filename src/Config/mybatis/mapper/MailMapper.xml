@@ -4,8 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="Dao.MailMapper">
-    <select id="selectAllMailById" resultType="Bean.Mail">
-        select * from mail where id = #{id} and deleted = 0
+    <select id="selectAllMailByUsername" resultType="Bean.Mail">
+        select * from mail where to = #{username} and deleted = 0
     </select>
 
     <select id="selectAllMail" resultType="Bean.Mail">
