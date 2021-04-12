@@ -27,7 +27,8 @@ public class MailService {
 
             SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
             User user = sqlSession.getMapper(UserMapper.class).selectUserByUsername(SendUser);
-            if (user != null)
+            //发送用户必须存在，且具有发送权限
+            if (user != null && (user.getAuthor() == 1 || user.getAuthor() == 3))
                 mailUtil.send(user.getUsername(), user.getPassword(), ReceiveUser, subject, text);
             else return false;
         }catch (Exception e){
@@ -51,7 +52,8 @@ public class MailService {
             User user = sqlSession.getMapper(UserMapper.class).selectUserByUsername(username);
 
             List<Mail> newMails = null ;
-            if (user != null)
+            //发送用户必须存在，且具有接受权限
+            if (user != null && (user.getAuthor() >=2 ))
                 newMails = mailUtil.receive(user.getUsername(), user.getPassword());
             MailMapper mailMapper = sqlSession.getMapper(MailMapper.class);
              mailMapper.insertSomeMail(newMails);

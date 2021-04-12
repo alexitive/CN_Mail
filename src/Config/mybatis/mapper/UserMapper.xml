@@ -49,8 +49,8 @@
             <if test="Phone != null">Phone=#{Phone},</if>
             <if test="nickName != null">nickName=#{nickName},</if>
             <if test="avatarUrl != null">avatarUrl=#{avatarUrl},</if>
-            <if test="author != null">author=#{author},</if>
-            <if test="type != null">type=#{type}</if>
+            <if test="author != 5">author=#{author},</if>
+            <if test="type != 3">type=#{type}</if>
         </set>
         where id=#{id}
     </update>
