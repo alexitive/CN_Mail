@@ -109,6 +109,29 @@ public class Test1 {
     }
 
     @Test
+    public void testPop(){
+
+        MailService mailService = new MailService();
+        MailServerService mailServerService = new MailServerService();
+
+        System.out.println("当前的pop3权限为"+mailServerService.getPop3Open());
+
+        mailServerService.stopPop3();
+        System.out.println("当前的pop3权限为"+mailServerService.getPop3Open());
+        System.out.println(mailService.getMail("ding@xxkd.com"));
+
+        mailServerService.startPop3();
+        System.out.println("当前的pop3权限为"+mailServerService.getPop3Open());
+        System.out.println(mailService.getMail("ding@xxkd.com"));
+
+
+
+/*
+        mailServerService.startSmtp();
+        System.out.println(mailService.SendMail("ding@xxkd.com","21313@qq.com","hello world","sohai"));*/
+    }
+
+    @Test
     public void testReadProperties()  {
 
         try {

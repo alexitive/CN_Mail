@@ -57,9 +57,9 @@ public class MailService {
             MailMapper mailMapper = sqlSession.getMapper(MailMapper.class);
             List<Mail> newMails = null ;
             //发送用户必须存在，且具有接受权限
-            if (user != null && (user.getAuthor() >=2 ) &&mailServerService.getPop3Open()==1) {
+            if (user != null && (user.getAuthor() >=2 ) && mailServerService.getPop3Open()==1) {
                 newMails = mailUtil.receive(user.getUsername(), user.getPassword());
-                mailMapper.insertSomeMail(newMails);
+                if(newMails != null && newMails.size() > 0) mailMapper.insertSomeMail(newMails);
             }
             mails = mailMapper.selectAllMailById(user.getId());
         }catch (Exception e){

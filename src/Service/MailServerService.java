@@ -85,6 +85,7 @@ public class MailServerService {
     public int getSmtpOpen(){
         try {
             String str= FriendMapper.class.getResource("/").getPath()+"Config/MailServer.properties";
+            System.out.println(str);
             Properties props=new Properties();
             props.load(new FileInputStream(str));
             return  Integer.valueOf(props.getProperty("OpenStmp"));
