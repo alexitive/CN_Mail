@@ -6,6 +6,7 @@ import Dao.MailMapper;
 import Dao.UserMapper;
 import Util.MailUtil;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ import java.util.List;
 @Service
 public class MailService {
     static ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("config/Spring-Config.xml");
+
+    @Autowired
+     MailServerService mailServerService = new MailServerService();
     /**
      * 发邮件的函数
      * @return
@@ -28,7 +32,7 @@ public class MailService {
             SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
             User user = sqlSession.getMapper(UserMapper.class).selectUserByUsername(SendUser);
             //发送用户必须存在，且具有发送权限
-            if (user != null && (user.getAuthor() == 1 || user.getAuthor() == 3))
+            if (user != null && (user.getAuthor() == 1 || user.getAuthor() == 3) && mailServerService.getSmtpOpen()==1)
                 mailUtil.send(user.getUsername(), user.getPassword(), ReceiveUser, subject, text);
             else return false;
         }catch (Exception e){
@@ -50,13 +54,13 @@ public class MailService {
 
             SqlSession sqlSession = (SqlSession) context.getBean("sqlSession");
             User user = sqlSession.getMapper(UserMapper.class).selectUserByUsername(username);
-
+            MailMapper mailMapper = sqlSession.getMapper(MailMapper.class);
             List<Mail> newMails = null ;
             //发送用户必须存在，且具有接受权限
-            if (user != null && (user.getAuthor() >=2 ))
+            if (user != null && (user.getAuthor() >=2 ) &&mailServerService.getPop3Open()==1) {
                 newMails = mailUtil.receive(user.getUsername(), user.getPassword());
-            MailMapper mailMapper = sqlSession.getMapper(MailMapper.class);
-             mailMapper.insertSomeMail(newMails);
+                mailMapper.insertSomeMail(newMails);
+            }
             mails = mailMapper.selectAllMailById(user.getId());
         }catch (Exception e){
             e.printStackTrace();

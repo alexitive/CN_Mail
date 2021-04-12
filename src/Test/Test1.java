@@ -4,11 +4,15 @@ import Bean.Mail;
 import Dao.FriendMapper;
 import Dao.MailMapper;
 import Dao.UserMapper;
+import Service.MailServerService;
+import Service.MailService;
 import Util.MailUtil;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.*;
 import java.util.*;
 
 public class Test1 {
@@ -85,8 +89,44 @@ public class Test1 {
 
     @Test
     public void testSend(){
-        MailUtil mailUtil = new MailUtil();
-        mailUtil.send("ding@xxkd.com","qq1220614922","21313@qq.com","hello world","sohai");
+
+        MailService mailService = new MailService();
+        MailServerService mailServerService = new MailServerService();
+
+        System.out.println("当前的smtp权限为"+mailServerService.getSmtpOpen());
+        System.out.println(mailService.SendMail("ding@xxkd.com","21313@qq.com","hello world","sohai"));
+        mailServerService.stopSmtp();
+        System.out.println("当前的smtp权限为"+mailServerService.getSmtpOpen());
+        System.out.println(mailService.SendMail("ding@xxkd.com","21313@qq.com","hello world","sohai"));
+        mailServerService.startSmtp();
+        System.out.println("当前的smtp权限为"+mailServerService.getSmtpOpen());
+        System.out.println(mailService.SendMail("ding@xxkd.com","21313@qq.com","hello world","sohai"));
+
+
+/*
+        mailServerService.startSmtp();
+        System.out.println(mailService.SendMail("ding@xxkd.com","21313@qq.com","hello world","sohai"));*/
+    }
+
+    @Test
+    public void testReadProperties()  {
+
+        try {
+            String str= FriendMapper.class.getResource("/").getPath()+"Config/MailServer.properties";
+            System.out.println(str);
+            Properties props=new Properties();
+            props.load(new FileInputStream(str));
+            OutputStream fos = new FileOutputStream(str);
+            System.out.println(props);
+            props.setProperty("OpenStmp", "2");
+            props.store(fos, "Update value");
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("属性文件更新错误");
+        }
+
+
     }
 
 
