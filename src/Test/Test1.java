@@ -114,11 +114,6 @@ public class Test1 {
         MailService mailService = new MailService();
         MailServerService mailServerService = new MailServerService();
 
-        System.out.println("当前的pop3权限为"+mailServerService.getPop3Open());
-
-        mailServerService.stopPop3();
-        System.out.println("当前的pop3权限为"+mailServerService.getPop3Open());
-        System.out.println(mailService.getMail("ding@xxkd.com"));
 
         mailServerService.startPop3();
         System.out.println("当前的pop3权限为"+mailServerService.getPop3Open());
